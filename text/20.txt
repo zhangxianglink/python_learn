@@ -1,0 +1,10 @@
+you have 20.3 apple
+you have 90 pen
+you have 2 apple
+you have 4 pen
+you have 3 apple
+you have 2 pen
+p1: jack
+p2: love
+you have jack apple
+you have love pen
