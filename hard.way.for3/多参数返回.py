@@ -17,6 +17,11 @@ print(f"a : {_a} ,b: {_b}, c : {_c}")
 print("break_words: {}".format(break_words(" 1  1   2       3")))
 print("sort_words: {}".format(sort_words("a321b")))
 arr = ["走","🐻"]
-print("print_first_word: {}".format(print_first_word(arr)))
-print("print_last_word: {}".format(print_last_word(arr)))
 
+print("print_first_word: ")
+print_first_word(arr)
+print("print_last_word:  ")
+print_last_word(arr)
+
+# 排序很奇怪
+print(sort_sentence("8 72 2 6 1 23"))
