@@ -6,3 +6,5 @@ print(13.14)
 """
 多行注释
 """
+
+print("aaaaaabbbcccccccaaa".strip("b"))
