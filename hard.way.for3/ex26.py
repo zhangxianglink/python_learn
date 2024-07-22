@@ -1,97 +1,40 @@
-from sys import argv
+import subprocess
+import json
 
-print("How old are you?", end=' ')
-age = input()
-print("How tall are you?", end=' ')
-height = input()
-print("How much do you weigh?", end=' ')
-weight = input()
+updated_gpu_info = []
+app_info = []
+# 列出当前激活的计算进程。
+command_v1 = "nvidia-smi --query-compute-apps=gpu_serial,pid,process_name --format=csv,noheader"
+result3 = subprocess.run(command_v1, shell=True, capture_output=True, text=True)
+if result3.returncode == 0:
+    print(f"command_v1: {result3.stdout}")
+    output3 = result3.stdout.strip().split('\n')
+    app_info = [dict(zip(['gpu_serial', 'pid', 'process_name'], app.split(', '))) for app in output3]
+    # 根据pid获取port
+    for info in app_info:
+        command_v2 = f"netstat -tulnp | grep {info['pid']} | awk '{{print $4}}' | awk -F ':' '{{print $2}}'"
+        try:
+            result1 = subprocess.run(command_v2, shell=True, capture_output=True, text=True, check=True)
+            info['port'] = result1.stdout.strip()  # 去除字符串前后的空格和换行符
+            print(f"command_v2: {result1.stdout}")
+        except subprocess.CalledProcessError as e:
+            print(f"根据pid获取port. command_v2 执行异常: {e.stderr}")
+else:
+    print(f"当前激活的计算进程。 command_v1 执行异常: {result3.stderr} ")
 
-print(f"So, you're {age} old, {height} tall and {weight} heavy.")
-
-script, filename = argv
-
-txt = open(filename)
-
-print(f"Here's your file {filename}:")
-print(txt.read())
-
-print("Type the filename again:")
-file_again = input("> ")
-
-txt_again = open(file_again)
-
-
-def txt_again_read():
-    return txt_again.read()
-
-
-print(txt_again_read())
-
-print("'Let's practice everything.'")
-
-poem = """
-The lovely world
-with logic so firmly planted
-cannot discern \n the needs of love
-nor comprehend passion from intuition
-and requires an explanation
-where there is none.
-"""
-
-print("--------------")
-print(poem)
-print("--------------")
-
-five = 10 - 2 + 3
-print(f"This should be five: {five}")
-
-
-def secret_formula(started):
-    jelly_beans = started * 500
-    jars = jelly_beans / 1000
-    crates = jars * 100
-    return jelly_beans, jars, crates
-
-
-start_point = 10000
-cre, beans, jars = secret_formula(start_point)
-
-# remember that this is another way to format a string
-print("With a starting point of: {}".format(start_point))
-# it's just like with an f"" string
-print(f"We'd have {beans} beans, {jars} jars. {cre}")
-
-start_point = start_point / 10
-
-print("We can also do that this way:")
-formula = secret_formula(start_point)
-# this is an easy way to apply a list to a format string
-print("We'd have {} beans, {} jars, and {} crates.".format(*formula))
-
-people = 20
-cates = 30
-dogs = 15
-
-if people < cates:
-    print("Too many cats! The world is doomed!")
-
-if people > cates:
-    print("Not many cats! The world is saved!")
-
-if people < dogs:
-    print("The world is drooled on!")
-
-if people > dogs:
-    print("The world is dry!")
-
-dogs += 5
-
-if people >= dogs:
-    print("People are greater than or equal to dogs.")
-
-if people <= dogs:
-    print("People are less than or equal to dogs.")
-
-if people == dogs:
-    print("People are dogs.")
+# 名称，显存信息，gpu使用率
+command_v3 = "nvidia-smi --query-gpu=gpu_serial,name,memory.total,memory.free,memory.used,utilization.gpu --format=csv,noheader"
+result2 = subprocess.run(command_v3, shell=True, capture_output=True, text=True)
+if result2.returncode == 0:
+    print(f"command_v3: {result2.stdout}")
+    output = result2.stdout.strip().split('\n')
+    gpu_info = [dict(zip(['gpu_serial', 'name', 'memory_total', 'memory_free', 'memory_used', 'utilization_gpu'],
+                         gpu.split(', '))) for gpu in output]
+    gpu_dict = {gpu['gpu_serial']: gpu for gpu in gpu_info}
+    for app in app_info:
+        if app['gpu_serial'] in gpu_dict:
+            gpu_dict[app['gpu_serial']].update(app)
+    updated_gpu_info = list(gpu_dict.values())
+else:
+    print(f"名称，显存信息，gpu使用率 command_v3 执行异常: {result2.stderr} ")
+print(json.dumps(updated_gpu_info))

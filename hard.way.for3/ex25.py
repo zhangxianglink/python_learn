@@ -1,38 +1,66 @@
 # -*- coding: utf-8 -*-
-# fix bug
+# !/usr/bin/python
+# _*_coding:utf-8 _*_
 
-def break_words(stuff):
-    """This function will break up words for us."""
-    words = stuff.split(' ')
-    return words
 
-def sort_words(words):
-    """Sorts the words."""
-    return sorted(words)
+import urllib, urllib2
+import json
+import sys
+import simplejson
+import base64
+import hashlib
 
-def print_first_word(words):
-    """Prints the first word after popping it off."""
-    word = words.pop(0)
-    print(word)
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
-def print_last_word(words):
-    """Prints the last word after popping it off."""
-    word = words.pop(-1)
-    print(word)
 
-def sort_sentence(sentence):
-    """Takes in a full sentence and returns the sorted words """
-    words = break_words(sentence)
-    return sort_words(words)
+def gettoken(corpid, corpsecret):
+    gettoken_url = 'https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=' + corpid + '&corpsecret=' + corpsecret
+    print(gettoken_url)
+    try:
+        token_file = urllib2.urlopen(gettoken_url)
+    except urllib2.HTTPError as e:
+        print(e.code)
+        print(e.read().decode("utf8"))
+        sys.exit()
+    token_data = token_file.read().decode('utf-8')
+    token_json = json.loads(token_data)
+    token_json.keys()
+    token = token_json['access_token']
+    print(token)
+    return token
 
-def print_first_and_last(sentence):
-    """Prints the first  last words of the sentence."""
-    words = break_words(sentence)
-    print_first_word(words)
-    print_last_word(words)
 
-def print_first_and_last_sorted(sentence):
-    """Sorts the words then prints the first and last one."""
-    words = sort_sentence(sentence)
-    print_first_word(words)
-    print_last_word(words)
+def senddata(access_token, user, subject, content):
+    with open('/usr/lib/zabbix/alertscripts/graph/bg.png', mode='rb') as f:
+        png = f.read()
+    png_md5 = hashlib.md5()
+    png_64 = base64.b16encode(png)
+    send_url = 'https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=' + access_token
+    send_values = {
+        "touser": "@all",  # 企业号中的用户帐号，在zabbix用户Media中配置，如果配置不正常，将按部门发送。
+        "toparty": "2",  # 企业号中的部门id。
+        "msgtype": "text",  # 消息类型。
+        "agentid": "100035",  # 企业号中的应用id。
+        "text": {
+            "content": subject + '\n' + content
+        },
+        "safe": "0"
+    }
+
+    #    send_data = json.dumps(send_values, ensure_ascii=False)
+    send_data = simplejson.dumps(send_values, ensure_ascii=False).encode('utf-8')
+    send_request = urllib2.Request(send_url, send_data)
+    response = json.loads(urllib2.urlopen(send_request).read())
+    print(str(response))
+
+
+if __name__ == '__main__':
+    user = str(sys.argv[1])  # zabbix传过来的第一个参数
+    subject = str(sys.argv[2])  # zabbix传过来的第二个参数
+    content = str(sys.argv[3])  # zabbix传过来的第三个参数
+
+    corpid = '22jsaooasbf23934'  # CorpID是企业号的标识
+    corpsecret = '410Jsk8_4lvCQYmdo92-sdfafsadfasdfxzc'  # corpsecretSecret是管理组凭证密钥
+    accesstoken = gettoken(corpid, corpsecret)
+    senddata(accesstoken, user, subject, content)

@@ -1,93 +1,43 @@
 # -*- coding: utf-8 -*-
-import contextlib
-import wave
-import webrtcvad
-import os
-import sys
-import collections
-MODE = 3
+# 打开日志文件进行读取
+import http.client
+from openpyxl import Workbook
 
+# 创建一个新的Excel工作簿
+wb = Workbook()
+ws = wb.active
 
-def read_wave(path):
-    """Reads a .wav file.
-    Takes the path, and returns (PCM audio data, sample rate).
-    """
-    with contextlib.closing(wave.open(path, 'rb')) as wf:
-        # 返回音频通道数
-        num_channels = wf.getnchannels()
-        assert num_channels == 1
-        # 每帧2字节
-        sample_width = wf.getsampwidth()
-        assert sample_width == 2
-        # 采样率
-        sample_rate = wf.getframerate()
-        assert sample_rate in (8000, 16000, 32000, 48000)
-        pcm_data = wf.readframes(wf.getnframes())
-        return pcm_data, sample_rate
+conn = http.client.HTTPConnection("192.168.2.126", 8082)
 
+headers = {
+    'Content-Type': 'application/json'
+}
 
-def write_wave(path, audio, sample_rate):
-    """Writes a .wav file.
-    Takes path, PCM audio data, and sample rate.
-    """
-    with contextlib.closing(wave.open(path, 'wb')) as wf:
-        wf.setnchannels(1)
-        wf.setsampwidth(2)
-        wf.setframerate(sample_rate)
-        wf.writeframes(audio)
+with open('D:\\linuxupload\\a.log', 'r', encoding='utf-8') as file:
+    line_count = 0  # 初始化行计数器
+    for line in file:  # 逐行读取
+        if line_count > 60:  # 如果已处理60行，则退出循环
+            break
+        # 检查是否包含关键字
+        if "参数：" in line or "返回结果：" in line:
+            keyword = "参数：" if "参数：" in line else "返回结果："
+            keyword_index = line.index(keyword)
+            # 输出关键字前20个字符
+            id = line[max(0, keyword_index - 20):keyword_index]
+            # 输出关键字后所有字符
+            msg = line[keyword_index + len(keyword):].strip()
+            if keyword == "参数：":
+                ws.append([id, "参数", msg])
+            else:
+                ws.append([id, "192.168.2.23", msg])
+            if msg.startswith("{\"stream\""):
+                conn.request("POST", "/v1/chat/message_question_summary", msg.encode('utf-8'), headers)
+                res = conn.getresponse()
+                data = res.read()
+                decode = data.decode("utf-8")
+                print(decode)
+                ws.append([id, "192.168.2.126", decode])
+        line_count += 1
 
-class Frame(object):
-    """Represents a "frame" of audio data."""
-    def __init__(self, bytes, timestamp, duration):
-        self.bytes = bytes
-        self.timestamp = timestamp
-        self.duration = duration
-
-def frame_generator(frame_duration_ms, audio, sample_rate):
-    """Generates audio frames from PCM audio data.
-    Takes the desired frame duration in milliseconds, the PCM data, and
-    the sample rate.
-    Yields Frames of the requested duration.
-    """
-    n = int(sample_rate * (frame_duration_ms / 1000.0) * 2)
-    offset = 0
-    timestamp = 0.0
-    duration = (float(n) / sample_rate) / 2.0
-    while offset + n < len(audio):
-        yield Frame(audio[offset:offset + n], timestamp, duration)
-        timestamp += duration
-        offset += n
-
-def vad_collector(sample_rate, vad, frames):
-
-    voiced_frames = []
-    for idx, frame in enumerate(frames):
-        is_speech = vad.is_speech(frame.bytes, sample_rate)
-        if is_speech:
-            voiced_frames.append(frame)
-    return b''.join(f.bytes for f in voiced_frames)
-
-def voiced_frames_expand(voiced_frames, duration=2):
-    total = duration * 16000
-    expand_voiced_frames = voiced_frames
-    while len(expand_voiced_frames) < total:
-        expand_num = total - len(expand_voiced_frames)
-        expand_voiced_frames += voiced_frames[: expand_num]
-    return expand_voiced_frames
-def filter(wavpath, out_dir, expand=False):
-    audio, sample_rate = read_wave(wavpath)
-    # 0 和 3 之间。0 对过滤最不激进 非言语，3是最激进的
-    vad = webrtcvad.Vad(MODE)
-    frames = frame_generator(30, audio, sample_rate)
-    frames = list(frames)
-
-    voiced_frames = vad_collector(sample_rate, vad, frames)
-    voiced_frames = voiced_frames_expand(voiced_frames, 2)
-    wav_name = wavpath.split('\\')[-1]
-    save_path = out_dir + '\\'  +"mo"+wav_name
-    write_wave(save_path, voiced_frames, sample_rate)
-
-if __name__ == "__main__":
-    in_wave = '/data/software/vad/six.wav'
-    outwav='/data/software/vad/out/'
-    filter(in_wave, outwav, expand=False)
+# 将结果追加写入文件
+wb.save('D:\\data\\models\\output.xlsx')
