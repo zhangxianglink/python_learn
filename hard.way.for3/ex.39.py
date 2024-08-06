@@ -1,36 +1,13 @@
-# -*- coding: utf-8 -*-
-states = {
-    'Oregon': 'OR',
-    'Florida': 'FL',
-    'California': 'CA',
-    'New York': 'NY',
-    'Michigan': 'MI'
-}
 
-# create a basic set of states and some cities in them
-cities = {
-    'CA': 'San Francisco',
-    'MI': 'Detroit',
-    'FL': 'Jacksonville'
-}
+import pandas as pd
 
-cities['NY'] = 'New York'
-cities['OR'] = 'Portland'
+# 读取Excel文件
+df = pd.read_excel('D:\\data\\convert16\\退订新数据-500条-2.xlsx')
 
-print('*' * 10)
-print(cities['CA'])
-print(states['California'])
-print(cities[states['California']])
+# 将数据转换为JSON格式
+json_data = df.to_json(orient='records', force_ascii=False, lines=True, default_handler=str)
+type(json_data)
 
-print('*' * 10)
-for address,city in list(cities.items()):
-    print(f"address: {address}. city: {city}")
-
-print('*' * 10)
-print(states.get("Texas"))
-
-if not states.get("Texas"):
-    print("no Texas")
-
-city = cities.get('TX','Does Not Exist')
-print(city)
+# 将JSON数据保存到文件中
+with open('D:\\data\\convert16\\退订新数据-500条-2.json', 'w', encoding='utf-8') as f:
+    f.write(json_data)

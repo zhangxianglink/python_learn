@@ -8,72 +8,48 @@ st.set_page_config(layout="wide")
 
 # 预定义选项及注解
 titles_with_numbers = {
-    "正确介绍套餐资费": 1,
-    "正确介绍套餐内容": 2,
-    "客户询问套餐资费": 3,
-    "客服正确回答资费问题": 4,
-    "客户是否同意订购": 5,
+    "欺骗不收费": 1,
+    "不提资费": 2,
+    "强调消费不变": 3,
+    "告知错误的试用政策": 4,
+    "强调套餐不变": 5,
+    "误导免费": 6,
+    "利用赠送活动误导": 7,
+    "强调试用期免费": 8,
+    "干扰资费": 9,
+    "营销文字游戏话术": 10,
+    "误导在套餐": 11,
+    "没有以上任何问题": 12
 }
 
 annotations = {
-    "正确介绍套餐资费": 1,
-    "正确介绍套餐内容": 2,
-    "客户询问套餐资费": 3,
-    "客服正确回答资费问题": 4,
-    "客户是否同意订购": 5,
-}
-
-# 子选项
-subtitles = {
-    1: {
-        "1.1【未补救】坐席用欺骗方式讲述资费（您每月不需要加XX元、别人单独申请需要加XX元您直接用之类）": 1.1,
-        "1.2【已补救】坐席用欺骗方式讲述资费（您每月不需要加XX元、别人单独申请需要加XX元您直接用之类）": 1.2,
-        "1.3用户全文未同意订购坐席全文未主动介绍过资费": 1.3,
-        "1.4营销两个产品，但是全文只主动介绍一个产品资费。在用户同意后二次确认中第二个产品一句话带过，用户未发觉直接同意了": 1.4,
-        "1.5坐席先未主动告知资费，用户同意后，二次确认时资费一句带过": 1.5,
-        "1.6【未补救】坐席主动介绍了资费，但是采用诱导话术，强调消费没变（每个月多加X元但消费不改变/还和以前一样之类/还是正常用": 1.6,
-        "1.7【已补救】坐席主动介绍了资费，但是采用诱导话术，强调消费没变（每个月多加X元但消费不改变/还和以前一样之类/还是正常用）": 1.7,
-        "1.8【未补救】坐席主动介绍了资费，但是玩文字游戏，让用户没理解是在告知资费（您可以享受一个每月多加X元的权益/会员/礼包/福利/流量/语音）": 1.8,
-        "1.9【已补救】坐席主动介绍了资费，但是玩文字游戏，让用户没理解这是告知资费（您可以享受一个每月多加X元的权益/会员/礼包/福利/流量/语音）": 1.9,
-        "1.10利用客户对低消、赠费等产品政策不理解，告知资费但是实际不会收取（因为消费达到X元会赠送/每月会返还您X元话费，正好用于抵扣之类）": 1.10
-    },
-    3: {"占位符"},
-    4: {
-        "4.1【未补救】用户询问资费时，坐席用欺骗方式回答了资费（您每月不需要加XX元、别人单独申请需要加XX元您不要钱之类）": 4.1,
-        "4.2【已补救】用户询问资费时，坐席用欺骗方式回答了资费（您每月不需要加XX元、别人单独申请需要加XX元您不要钱之类）": 4.2,
-        "4.3【未补救】用户询问资费时，坐席直接回答不会收费": 4.3,
-        "4.4【已补救】用户询问资费时，坐席直接回答不会收费": 4.4,
-        "4.5【未补救】用户询问资费时，坐席用回答了资费，但是采用诱导话术，强调消费没变（每个月多加X元，但是您套餐不改变/消费不改变/还是那个套餐之类）": 4.5,
-        "4.6【已补救】用户询问资费时，坐席用回答了资费，但是采用诱导话术，强调消费没变（每个月多加X元，但是您套餐不改变/消费不改变/还是那个套餐之类）": 4.6,
-        "4.7【未补救】用户询问资费时，坐席回答了资费，但是完文字游戏，让用户关注不到资费内容（您可以享受一个每月多加X元的权益/会员/礼包/福利/流量/语音之类）": 4.7,
-        "4.8【已补救】用户询问资费时，坐席回答了资费，但是完文字游戏，让用户关注不到资费内容（您可以享受一个每月多加X元的权益/会员/礼包/福利/流量/语音之类）": 4.8,
-        "4.9【未补救】用户询问资费时，利用客户对低消、赠费等产品政策不理解，告知资费但是实际不会收取（因为消费达到X元会赠送/每月会返还您X元话费，正好用于抵扣之类）": 4.9,
-        "4.10【已补救】用户询问资费时，利用客户对低消、赠费等产品政策不理解，告知资费但是实际不会收取（因为消费达到X元会赠送/每月会返还您X元话费，正好用于抵扣之类）": 4.10
-    },
-    5: {
-        "5.1用户答复敷衍（嗯，哦，知道了，再说吧，好好好好好，行行行行，这类敷衍回答）": 5.1,
-        "5.2用户多次拒绝（2次以上说不需要），坐席挽留后勉强同意": 5.2,
-        "5.3用户全文未同意订购": 5.3,
-        "5.4未主动介绍营销内容，强调来电是通知服务维系（例如网络优化、优惠活动延续等不涉及业务办理的事项），用户误认为不需要办理业务才同意": 5.4
-    }
+    "欺骗不收费": "您不需要付费/没有任何收费",
+    "不提资费": "利用网络提速/改善信号等借口",
+    "强调消费不变": "每月加X元，不增加任何费用/消费不改变/还是以前的月租、月费/每月还是XX元的消费",
+    "告知错误的试用政策": "前X个月您免费用，到期想继续用，联系我们，才会收每月X元",
+    "强调套餐不变": "每月加X元，您套餐不改变/用的还是XX套餐/还是原来的套餐",
+    "误导免费": "每月多加X元，都是赠送的/免费的/给您体验的/试用的",
+    "利用赠送活动误导": "每月加X元，但是又赠送您X元直接抵扣了",
+    "强调试用期免费": "每月多加X元，但是费用我们会减免",
+    "干扰资费": "每月加X元您直接用，您正常用/您放心用/您安心用",
+    "营销文字游戏话术": "您可以享受/回馈一个每月多加X元的权益/会员/礼包/福利/流量/语音",
+    "误导在套餐": "每月加X元，都在您现在的XX元消费/XX元套餐以内的",
+    "没有以上任何问题": "客服营销很规范。"
 }
 
 titles = [f"{title}（{annotation}）" for title, annotation in annotations.items()]
 numbers_to_titles = {v: k for k, v in titles_with_numbers.items()}
-
 
 # 加载数据
 def load_data(file):
     data = json.load(file)
     return data
 
-
 # 保存标注结果
 def save_results(data, output_file):
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
-
 
 # 初始化状态
 if 'data' not in st.session_state:
@@ -82,7 +58,8 @@ if 'data' not in st.session_state:
 # 文件选择
 st.write("选择标注数据文件和保存文件的位置")
 input_file = st.file_uploader("选择标注数据文件", type=["json"])
-output_dir = st.text_input("输入保存文件的目录", value="C:\\Users\\admin\\Desktop")
+#output_dir = st.text_input("输入保存文件的目录", value="")
+output_dir = st.text_input("输入保存文件的目录", value="D:\\data\\convert16")
 
 if input_file and output_dir:
     if not st.session_state.data_loaded:
@@ -104,8 +81,6 @@ if input_file and output_dir:
         st.session_state.marked_data = output_data
         st.session_state.output_file_path = output_file_path
         st.session_state.data_loaded = True
-        st.session_state.current_init = True
-        st.session_state.page = {}
 
 if 'data' in st.session_state:
     # 显示标注进度
@@ -118,15 +93,11 @@ if 'data' in st.session_state:
     with col_top1:
         if st.button('删除当前记录', key='delete_record'):
             del st.session_state.data[st.session_state.current_index]
-            st.session_state.current_init = True
-            st.session_state.page = {}
             st.experimental_rerun()
     with col_top2:
         if st.button('保留标注结果', key='keep_marks'):
             st.session_state.marked_data.append(st.session_state.data[st.session_state.current_index])
             st.session_state.current_index += 1
-            st.session_state.current_init = True
-            st.session_state.page = {}
             st.experimental_rerun()
     with col_top3:
         if st.button('中途保存', key='save_partial'):
@@ -139,31 +110,31 @@ if 'data' in st.session_state:
 
         col1, col2 = st.columns([1, 1])  # 分成两等宽的列
 
-        # 高亮原文摘要
-        output_data = current_record['output']
-        if isinstance(output_data, str):
-            output_data = json.loads(output_data)  # 如果是字符串，则将其加载为JSON
-
-        # 展平嵌套列表
-        flat_output_data = []
-        for sublist in output_data:
-            if isinstance(sublist, list):
-                flat_output_data.extend(sublist)
-            else:
-                flat_output_data.append(sublist)
-
-        if (st.session_state.current_init):
-            st.session_state.current_init = False
-            for i, mark in enumerate(flat_output_data):
-                st.session_state.page[f"summary_{mark['编号']}"] = mark.get('原文摘要')
-                st.session_state.page[f"explanation_{mark['编号']}"] = mark.get('解释')
-                st.session_state.page[f"subtitle_summary_{mark['编号']}"] = mark.get('子选项原文摘要')
-                st.session_state.page[f"subtitle_explanation_{mark['编号']}"] = mark.get('子选项解释')
-
-
         with col1:
             st.write("**原文**:")
             info_html = current_record['input'].replace('\n', '<br>')  # 将换行符替换为<br>
+
+            # 高亮原文摘要
+            output_data = current_record['output']
+            if isinstance(output_data, str):
+                output_data = json.loads(output_data)  # 如果是字符串，则将其加载为JSON
+
+            # 展平嵌套列表
+            flat_output_data = []
+            for sublist in output_data:
+                if isinstance(sublist, list):
+                    flat_output_data.extend(sublist)
+                else:
+                    flat_output_data.append(sublist)
+
+            for mark in flat_output_data:
+                if "原文摘要" in mark and isinstance(mark["原文摘要"], str):  # 确保摘要存在且是字符串
+                    pattern = re.escape(mark["原文摘要"])
+                    replacement = f'<span style="background-color: yellow;">{mark["原文摘要"]}</span>'
+                    info_html = re.sub(pattern, replacement, info_html)
+                else:
+                    st.write(f"原文摘要不是字符串或不存在：{mark}")
+
             st.markdown(
                 f'<div style="height: calc(100vh - 150px); overflow-y: scroll; border: 1px solid #ccc; padding: 10px;">{info_html}</div>',
                 unsafe_allow_html=True
@@ -171,59 +142,26 @@ if 'data' in st.session_state:
 
         with col2:
             st.write("**标注信息**:")
-            show_four = False
             for i, mark in enumerate(flat_output_data):
-                with st.expander(f"**标注 {i + 1}**:"):
-                    # 使用下拉菜单选择标题，并更新编号
-                    if mark['标题'] not in titles_with_numbers:
-                        mark['标题'] = numbers_to_titles.get(mark['编号'], mark['标题'])
+                st.write(f"**标注 {i + 1}**:")
 
-                    annotated_titles = [f"{title}（{annotations[title]}）" for title in titles_with_numbers.keys()]
-                    selected_title = st.selectbox(f"标题 {i + 1}", annotated_titles, index=annotated_titles.index(
-                        f"{mark['标题']}（{annotations[mark['标题']]}）"), key=f"title_{i}")
-                    mark['标题'] = selected_title.split('（')[0]
-                    mark['编号'] = titles_with_numbers[mark['标题']]  # 根据标题更新编号
-                    st.write(f"编号: {mark['编号']}")  # 显示编号
+                # 使用下拉菜单选择标题，并更新编号
+                if mark['标题'] not in titles_with_numbers:
+                    mark['标题'] = numbers_to_titles.get(mark['编号'], mark['标题'])
 
-                    # 级联子选项
-                    show_subtitle = False
-                    if mark['编号'] in subtitles:
-                        mark['结果'] = st.selectbox(f"结果 {i + 1}", ['是', '否'], index=0 if mark['结果'] == '是' else 1,
-                                                  key=f"result_{i}")
-                        if mark['编号'] in [1, 5]:
-                            show_subtitle = mark['结果'] == '否'
-                        elif mark['编号'] == 3:
-                            show_four = mark['结果'] == '是'
-                        else:
-                            show_subtitle = (show_four and mark['结果'] == '否')
+                annotated_titles = [f"{title}（{annotations[title]}）" for title in titles_with_numbers.keys()]
+                selected_title = st.selectbox(f"标题 {i + 1}", annotated_titles, index=annotated_titles.index(f"{mark['标题']}（{annotations[mark['标题']]}）"), key=f"title_{i}")
+                mark['标题'] = selected_title.split('（')[0]
+                mark['编号'] = titles_with_numbers[mark['标题']]  # 根据标题更新编号
+                st.write(f"编号: {mark['编号']}")  # 显示编号
+                mark['结果'] = st.selectbox(f"结果 {i + 1}", ['是', '否'], index=0 if mark['结果'] == '是' else 1, key=f"result_{i}")
+                mark['原文摘要'] = st.text_area(f"原文摘要 {i + 1}", value=mark.get('原文摘要', ''), key=f"summary_{i}")  # 如果不存在，则默认为空字符串
+                mark['解释'] = st.text_area(f"解释 {i + 1}", value=mark.get('解释', ''), key=f"explanation_{i}")  # 如果不存在，则默认为空字符串
 
-                    else:
-                        mark['结果'] = st.selectbox(f"结果 {i + 1}", ['是', '否'], index=0 if mark['结果'] == '是' else 1,
-                                                  key=f"result_{i}")
-
-                    if show_subtitle:
-                        subtitle_options = subtitles[mark['编号']]
-                        subtitle = st.selectbox(f"子选项 {i + 1}", list(subtitle_options.keys()), key=f"subtitle_{i}")
-                        mark['子选项'] = subtitle_options[subtitle]
-                        mark['子选项原文摘要'] = st.text_area(f"子选项原文摘要 {i + 1}",value=st.session_state.page[f"subtitle_summary_{mark['编号']}"])  # 如果不存在，则默认为空字符串
-                        mark['子选项解释'] = st.text_area(f"子选项解释 {i + 1}",value=st.session_state.page[f"subtitle_explanation_{mark['编号']}"])  # 如果不存在，则默认为空字符串
-                    else:
-                        mark.pop('子选项', None)
-                        mark.pop('子选项原文摘要', None)
-                        mark.pop('子选项解释', None)
-
-                    mark['原文摘要'] = st.text_area(f"原文摘要 {i + 1}", value=st.session_state.page[f"summary_{mark['编号']}"])  # 如果不存在，则默认为空字符串
-                    mark['解释'] = st.text_area(f"解释 {i + 1}",value=st.session_state.page[f"explanation_{mark['编号']}"])  # 如果不存在，则默认为空字符串
-
-                    if st.button(f'删除标注 {i + 1}', key=f'delete_mark_{i}'):
-                        flat_output_data.pop(i)
-                        current_record['output'] = flat_output_data  # 无需将其转换为JSON字符串
-                        st.session_state.page[f"summary_{mark['编号']}"] = ''
-                        st.session_state.page[f"explanation_{mark['编号']}"] = ''
-                        st.session_state.page[f"subtitle_summary_{mark['编号']}"] = ''
-                        st.session_state.page[f"subtitle_explanation_{mark['编号']}"] = ''
-                        st.session_state.current_init = True
-                        st.experimental_rerun()
+                if st.button(f'删除标注 {i + 1}', key=f'delete_mark_{i}'):
+                    flat_output_data.pop(i)
+                    current_record['output'] = flat_output_data  # 无需将其转换为JSON字符串
+                    st.experimental_rerun()
 
             # 新增标注按钮
             if st.button('新增标注'):
@@ -235,7 +173,6 @@ if 'data' in st.session_state:
                     '解释': ''
                 }
                 flat_output_data.append(new_mark)
-
                 current_record['output'] = flat_output_data  # 无需将其转换为JSON字符串
                 st.experimental_rerun()
 

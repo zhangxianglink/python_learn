@@ -5,7 +5,7 @@ import os
 import pandas as pd
 
 # 读取Excel文件
-df = pd.read_excel('D:\\data\\yy6\\永怡航动6月失败单.xlsx')
+df = pd.read_excel('D:\\data\\yy6\\待分析录音.xlsx')
 
 # 指定下载文件夹路径
 download_folder = 'D:\\data\\yy6\\audio'

@@ -1,31 +1,37 @@
 # -*- coding: utf-8 -*-
 import pandas as pd
 import openpyxl
-import json
+from datetime import datetime
+import requests
 
 # 读取Excel文件
-df = pd.read_excel("D:\\linuxupload\\models\\永怡画像10_half2调整版.xlsx")
+df = pd.read_excel("C:\\Users\\admin\\Desktop\\退订1.xlsx")
+
+
+def send_post_request(url, data):
+    start_time = datetime.now()
+    response = requests.post(url, json=data)
+    end_time = datetime.now()
+    print(f"{url}  Total time: {(end_time - start_time)} ms")
+    return response.json()
+
 
 # 创建一个新的excel文件
 workbook = openpyxl.Workbook()
 sheet = workbook.active
 row = 1
 for i in range(len(df)):
-    half1 = df.iloc[i]['half1']
-    half2_0713 = df.iloc[i]['half2-0713']
-    half1_0716 = df.iloc[i]['half2-0716']
-    half20713 = json.loads(half2_0713)
-    half20716 = json.loads(half1_0716)
-    half1j = json.loads(half1)
-    print(type(half20713['data']['message']))
-    a = json.loads(half20713['data']['message'])
+    half1 = df.iloc[i]['id']
+    txt = df.iloc[i]['txt']
+    data = {"stream": False, "model": "Qwen2-7b", "audio_text": txt}
+    response = send_post_request("http://192.168.2.9:8083/v1/chat/quality_inspection", data)
+    response2 = send_post_request("http://192.168.2.58:8083/v1/chat/newqc", data)
 
-    sheet.cell(row, 1, df.iloc[i]['入参'])
-    sheet.cell(row, 2, json.dumps(a, ensure_ascii=False, indent=4))
-    sheet.cell(row, 3, half20716['data']['message'] )
-    sheet.cell(row, 4, half1j['data']['message'] )
-
+    sheet.cell(row, 1, half1)
+    sheet.cell(row, 2, txt)
+    sheet.cell(row, 3, response['data']['message'])
+    sheet.cell(row, 4, response2['data']['message'])
     row += 1
 
 # 保存excel文件
-workbook.save("D:\\linuxupload\\models\\永怡画像10_half2调整版2.xlsx")
+workbook.save("C:\\Users\\admin\\Desktop\\退订2.xlsx")

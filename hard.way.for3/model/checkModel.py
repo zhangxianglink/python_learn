@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import requests
-import json
 import pandas as pd
 
 url = "http://192.168.2.68:8082/v1/chat/user_profile_half2"

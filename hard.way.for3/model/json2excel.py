@@ -3,7 +3,7 @@ import json
 import openpyxl
 
 # 读取json文件
-with open("C:\\Users\\admin\\Desktop\\profile\\half1\\sh.json", 'r', encoding='utf-8') as file:
+with open("D:\data\dudu\\zzzzz.json", 'r', encoding='utf-8') as file:
     data = json.load(file)
 
 # 创建一个新的excel文件
@@ -28,5 +28,5 @@ for item in data:
     row += 1
 
 # 保存excel文件
-workbook.save("C:\\Users\\admin\\Desktop\\profile\\half1\\sh.xlsx")
+workbook.save("D:\data\dudu\\zzzzz.xlsx")
 
